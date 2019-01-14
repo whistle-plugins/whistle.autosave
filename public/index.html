@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title>设置AutoSave</title>
+  <style>
+    html, body, pre {
+      font-family: "Helvetica Neue", Helvetica, Tahoma, Arial, "Microsoft Yahei", 微软雅黑, "Hiragino Sans GB", "PingFang SC", STHeiTi, sans-serif;
+      font-size: 14px;
+      padding: 0;
+      margin: 0;
+    }
+    input, textarea {
+      font-family: "Helvetica Neue", Helvetica, Tahoma, Arial, "Microsoft Yahei", 微软雅黑, "Hiragino Sans GB", "PingFang SC", STHeiTi, sans-serif;
+      font-size: 14px;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    #root {
+      width:800px;
+      margin: 0 auto;
+      padding-bottom: 100px;
+      display: none;
+    }
+    a {
+      color: #337ab7;
+      text-decoration: none;
+    }
+    label {
+      display: block;
+    }
+    label input[type=text], label textarea {
+      display: block;
+      width: 100%;
+      height: 34px;
+      padding: 0 12px;
+      font-size: 14px;
+      line-height: 1.42857143;
+      color: #555;
+      background-color: #fff;
+      background-image: none;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+      box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+      -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+      -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+      transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+      margin-top: 8px;
+      background-color: lightyellow;
+    }
+    label textarea {
+      resize: none;
+      height: 200px;
+      padding: 5px 10px;
+    }
+    header {
+      line-height: 50px;
+      height: 50px;
+      position: sticky;
+    }
+    header label {
+      float: left;
+    }
+    button {
+      color: #fff;
+      margin-top: 12px;
+      background-color: #337ab7;
+      border-color: #2e6da4;
+      padding: 8px 16px;
+      margin-bottom: 0;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.42857143;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: middle;
+      -ms-touch-action: manipulation;
+      touch-action: manipulation;
+      cursor: pointer;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      background-image: none;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      float: right;
+    }
+    button[disabled] {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    #tips {
+      display: none;
+      text-align: center;
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      padding: 0 20px;
+      line-height: 40px;
+      background-color: #d9534f;
+      border-radius: 3px;
+      color: #fff;
+    }
+    #tips.success {
+      background: #5cb85c;
+    }
+    #tips.warn {
+      background: lightyellow;
+    }
+    .form-control {
+      margin-top: 36px;
+      font-weight: bold;
+    }
+    .desc {
+      margin-top: 10px;
+    }
+    pre {
+      margin: 10px 0;
+      padding: 0;
+      font-family: consola;
+      background: #eee;
+      padding-top: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div id="tips"></div>
+  <div id="root">
+    <header>
+      <label style="font-weight: bold;">
+        <input id="active" type="checkbox" />
+        自动保存抓包数据
+      </label>
+      <button disabled id="update">更新配置</button>
+    </header>
+    <label class="form-control">
+      请输入本地存储目录(需确保该目录存在，插件不会自动创建):
+      <input id="sessionsDir" maxlength="3072" type="text" placeholder="请输入完整目录路径" />
+    </label>
+    <label class="form-control">
+      过滤条件(空表示匹配所有请求，否则只存储匹配的请求):
+      <textarea id="filterText" maxlength="3072" placeholder="请输入过滤条件，具体规则见下面的说明"></textarea>
+    </label>
+    <div class="desc">
+      <strong>说明: </strong>支持通过字符串、正则的方式匹配请求的URL，
+      且支持通过 <strong>!xxx</strong> 的方式取非，可以同时设置多个过滤条件，
+      条件之间用空格或换行符分隔，如：
+      <pre>
+        #注释
+        ke.qq.com !/test=1/ /autosave/i
+        !m.ke.qq.com
+      </pre>
+      上述配置表示，请求URL里面要包含字符串
+      <strong>ke.qq.com</strong>，或不匹配正则 <strong>/test=1/</strong>，
+      或匹配正则 <strong>/autosave/i</strong>，或不包含字符串 <strong>m.ke.qq.com</strong>，即：
+      <pre>
+        if (url.indexOf('ke.qq.com') !== -1 || !/test=1/.test(url)
+          || /autosave/i.test(url) || url.indexOf('m.ke.qq.com') === -1) {
+          // auto save
+        }
+      </pre>
+      如果该插件无法满足需要，比如更多的过滤条件或存储到指定远程数据库，可以参考
+      <a href="https://github.com/whistle-plugins/whistle.autosave" target="_blank">
+        whstle.autosave
+      </a>的实现自定义一个whistle插件。
+    </div>
+  </div>
+  <script src="jquery.js"></script>
+  <script>
+    ;(function() {
+      function showMessage(msg, success) {
+        var tips = $('#tips');
+        tips.text(msg);
+        if (success) {
+          tips.addClass('success');
+        } else {
+          tips.removeClass('success');
+        }
+        tips.stop(true, true).show();
+        tips.css('marginLeft', -tips[0].offsetWidth / 2);
+        tips.delay(2000).fadeOut(1600);
+      }
+
+      function initUI(data) {
+        $('#root').show();
+        if (data.active) {
+          $('#active')[0].checked = true;
+        }
+        if (data.sessionsDir) {
+          $('#sessionsDir').val(data.sessionsDir);
+        }
+        if (data.filterText) {
+          $('#filterText').val(data.filterText);
+        }
+
+        var pendingActive;
+        var activeBox = $('#active').on('change', ({ target }) => {
+          var { checked } = target;
+          if (pendingActive) {
+            target.checked = !checked;
+            return;
+          }
+          pendingActive = true;
+          $.post({
+            url: 'cgi-bin/active',
+            dataType: 'json',
+            data: { active: checked ? 1 : 0 },
+            success: function() {
+              pendingActive = false;
+              showMessage((checked ? '启用' : '关闭') + '成功', true);
+            },
+            error: function() {
+              target.checked = !checked;
+              pendingActive = false;
+              showMessage('提交失败，请稍后重试！');
+            }
+        });
+      });
+      var btn = $('#update');
+      $('#sessionsDir,#filterText').on('input', function(){
+         btn[0].disabled = false;
+      });
+      btn.click(function() {
+        btn[0].disabled = true;
+        $.post({
+          url: 'cgi-bin/set-settings',
+          dataType: 'json',
+          data: {
+            sessionsDir: $('#sessionsDir').val().trim(),
+            filterText: $('#filterText').val().trim()
+          },
+          success: function(data) {
+            if (data.ec) {
+              return showMessage(data.em);
+            }
+            showMessage('更新配置成功', true);
+            if (sessionsDir && !activeBox[0].checked && window.confirm('是否启用自动保存抓包数据？')) {
+              activeBox.trigger('click');
+            }
+          },
+          error: function() {
+            btn[0].disabled = false;
+            showMessage('提交失败，请稍后重试！');
+          }
+        });
+      });
+    }
+
+    function init() {
+      $.get({
+        url: 'cgi-bin/get-settings',
+        dataType: 'json',
+        success: initUI,
+        error: function() {
+          setTimeout(init, 1000);
+        }
+      });
+    }
+    init();
+  })();
+  </script>
+</body>
+</html>

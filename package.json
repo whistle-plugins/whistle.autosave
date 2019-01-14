@@ -1,0 +1,22 @@
+{
+  "name": "whistle.autosave",
+  "version": "0.0.1",
+  "description": "自动保存指定抓包数据到本地目录",
+  "main": "./lib",
+  "scripts": {
+    "lint": "eslint lib",
+    "lintfix": "eslint --fix lib"
+  },
+  "dependencies": {
+    "koa": "^2.6.2",
+    "koa-bodyparser": "^4.2.1",
+    "koa-onerror": "^4.1.0",
+    "koa-router": "^7.4.0",
+    "koa-static": "^5.0.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^9.0.0",
+    "eslint": "5.6.0",
+    "eslint-config-imweb": "^0.2.13"
+  }
+}

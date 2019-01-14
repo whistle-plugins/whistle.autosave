@@ -1,0 +1,4 @@
+# 插件自带的全局规则
+# 下面规则表示所有请求都会触发插件存在的除了server外的Hooks
+# 该插件只存在 resStatsServer hook
+* whistle.autosave://none
