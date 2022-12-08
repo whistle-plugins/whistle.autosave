@@ -4,35 +4,45 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-  <title>设置AutoSave</title>
+  <title>设置qpic-AutoSave</title>
   <style>
-    html, body, pre {
+    html,
+    body,
+    pre {
       font-family: "Helvetica Neue", Helvetica, Tahoma, Arial, "Microsoft Yahei", 微软雅黑, "Hiragino Sans GB", "PingFang SC", STHeiTi, sans-serif;
       font-size: 14px;
       padding: 0;
       margin: 0;
     }
-    input, textarea {
+
+    input,
+    textarea {
       font-family: "Helvetica Neue", Helvetica, Tahoma, Arial, "Microsoft Yahei", 微软雅黑, "Hiragino Sans GB", "PingFang SC", STHeiTi, sans-serif;
       font-size: 14px;
     }
+
     * {
       box-sizing: border-box;
     }
+
     #root {
-      width:800px;
+      width: 800px;
       margin: 0 auto;
       padding-bottom: 100px;
       display: none;
     }
+
     a {
       color: #337ab7;
       text-decoration: none;
     }
+
     label {
       display: block;
     }
-    label input[type=text], label textarea {
+
+    label input[type=text],
+    label textarea {
       display: block;
       width: 100%;
       height: 34px;
@@ -44,27 +54,31 @@
       background-image: none;
       border: 1px solid #ccc;
       border-radius: 4px;
-      -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-      box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-      -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
-      -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-      transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+      -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+      -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+      -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+      transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
       margin-top: 8px;
       background-color: lightyellow;
     }
+
     label textarea {
       resize: none;
       height: 200px;
       padding: 5px 10px;
     }
+
     header {
       line-height: 50px;
       height: 50px;
       position: sticky;
     }
+
     header label {
       float: left;
     }
+
     button {
       color: #fff;
       margin-top: 12px;
@@ -90,10 +104,12 @@
       border-radius: 4px;
       float: right;
     }
+
     button[disabled] {
       background: #ccc;
       cursor: not-allowed;
     }
+
     #tips {
       display: none;
       text-align: center;
@@ -106,19 +122,24 @@
       border-radius: 3px;
       color: #fff;
     }
+
     #tips.success {
       background: #5cb85c;
     }
+
     #tips.warn {
       background: lightyellow;
     }
+
     .form-control {
       margin-top: 36px;
       font-weight: bold;
     }
+
     .desc {
       margin-top: 10px;
     }
+
     pre {
       margin: 10px 0;
       padding: 0;
@@ -128,6 +149,7 @@
     }
   </style>
 </head>
+
 <body>
   <div id="tips"></div>
   <div id="root">
@@ -172,97 +194,118 @@
   </div>
   <script src="jquery.js"></script>
   <script>
-    ;(function() {
-      function showMessage(msg, success) {
-        var tips = $('#tips');
-        tips.text(msg);
-        if (success) {
-          tips.addClass('success');
-        } else {
-          tips.removeClass('success');
+    ; ( function ()
+    {
+      function showMessage( msg, success )
+      {
+        var tips = $( '#tips' );
+        tips.text( msg );
+        if ( success )
+        {
+          tips.addClass( 'success' );
+        } else
+        {
+          tips.removeClass( 'success' );
         }
-        tips.stop(true, true).show();
-        tips.css('marginLeft', -tips[0].offsetWidth / 2);
-        tips.delay(2000).fadeOut(1600);
+        tips.stop( true, true ).show();
+        tips.css( 'marginLeft', -tips[0].offsetWidth / 2 );
+        tips.delay( 2000 ).fadeOut( 1600 );
       }
 
-      function initUI(data) {
-        $('#root').show();
-        if (data.active) {
-          $('#active')[0].checked = true;
+      function initUI( data )
+      {
+        $( '#root' ).show();
+        if ( data.active )
+        {
+          $( '#active' )[0].checked = true;
         }
-        if (data.sessionsDir) {
-          $('#sessionsDir').val(data.sessionsDir);
+        if ( data.sessionsDir )
+        {
+          $( '#sessionsDir' ).val( data.sessionsDir );
         }
-        if (data.filterText) {
-          $('#filterText').val(data.filterText);
+        if ( data.filterText )
+        {
+          $( '#filterText' ).val( data.filterText );
         }
 
         var pendingActive;
-        var activeBox = $('#active').on('change', ({ target }) => {
+        var activeBox = $( '#active' ).on( 'change', ( { target } ) =>
+        {
           var { checked } = target;
-          if (pendingActive) {
+          if ( pendingActive )
+          {
             target.checked = !checked;
             return;
           }
           pendingActive = true;
-          $.post({
+          $.post( {
             url: 'cgi-bin/active',
             dataType: 'json',
             data: { active: checked ? 1 : 0 },
-            success: function() {
+            success: function ()
+            {
               pendingActive = false;
-              showMessage((checked ? '启用' : '关闭') + '成功', true);
+              showMessage( ( checked ? '启用' : '关闭' ) + '成功', true );
             },
-            error: function() {
+            error: function ()
+            {
               target.checked = !checked;
               pendingActive = false;
-              showMessage('提交失败，请稍后重试！');
+              showMessage( '提交失败，请稍后重试！' );
             }
-        });
-      });
-      var btn = $('#update');
-      $('#sessionsDir,#filterText').on('input', function(){
-         btn[0].disabled = false;
-      });
-      btn.click(function() {
-        btn[0].disabled = true;
-        $.post({
-          url: 'cgi-bin/set-settings',
-          dataType: 'json',
-          data: {
-            sessionsDir: $('#sessionsDir').val().trim(),
-            filterText: $('#filterText').val().trim()
-          },
-          success: function(data) {
-            if (data.ec) {
-              return showMessage(data.em);
+          } );
+        } );
+        var btn = $( '#update' );
+        $( '#sessionsDir,#filterText' ).on( 'input', function ()
+        {
+          btn[0].disabled = false;
+        } );
+        btn.click( function ()
+        {
+          btn[0].disabled = true;
+          $.post( {
+            url: 'cgi-bin/set-settings',
+            dataType: 'json',
+            data: {
+              sessionsDir: $( '#sessionsDir' ).val().trim(),
+              filterText: $( '#filterText' ).val().trim()
+            },
+            success: function ( data )
+            {
+              if ( data.ec )
+              {
+                return showMessage( data.em );
+              }
+              showMessage( '更新配置成功', true );
+              if ( sessionsDir && !activeBox[0].checked && window.confirm( '是否启用自动保存抓包数据？' ) )
+              {
+                activeBox.trigger( 'click' );
+              }
+            },
+            error: function ()
+            {
+              btn[0].disabled = false;
+              showMessage( '提交失败，请稍后重试！' );
             }
-            showMessage('更新配置成功', true);
-            if (sessionsDir && !activeBox[0].checked && window.confirm('是否启用自动保存抓包数据？')) {
-              activeBox.trigger('click');
-            }
-          },
-          error: function() {
-            btn[0].disabled = false;
-            showMessage('提交失败，请稍后重试！');
-          }
-        });
-      });
-    }
+          } );
+        } );
+      }
 
-    function init() {
-      $.get({
-        url: 'cgi-bin/get-settings',
-        dataType: 'json',
-        success: initUI,
-        error: function() {
-          setTimeout(init, 1000);
-        }
-      });
-    }
-    init();
-  })();
+      function init()
+      {
+        $.get( {
+          url: 'cgi-bin/get-settings',
+          dataType: 'json',
+          success: initUI,
+          error: function ()
+          {
+            setTimeout( init, 1000 );
+          }
+        } );
+      }
+      init();
+    } )();
   </script>
 </body>
+
 </html>

@@ -1,7 +1,7 @@
 {
-  "name": "whistle.autosave",
+  "name": "whistle.qpic-autosave",
   "version": "0.0.1",
-  "description": "自动保存指定抓包数据到本地目录",
+  "description": "微信图文中的图片 自动保存指定抓包数据到本地目录",
   "main": "./lib",
   "scripts": {
     "lint": "eslint lib",
